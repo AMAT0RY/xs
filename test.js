@@ -77,7 +77,7 @@ function extractAllValues(htmlContent) {
     return result;
 }
 
-async function postData(email, id, course, timezone, sesskey, _qf__user_edit_form, mform_isexpanded_id_moodle_picture, mform_isexpanded_id_moodle, mform_isexpanded_id_moodle_additional_names, mform_isexpanded_id_moodle_interests, mform_isexpanded_id_moodle_optional, mform_isexpanded_id_category_1 moodleSession, desc) {
+async function postData(email, id, course, timezone, sesskey, _qf__user_edit_form, mform_isexpanded_id_moodle_picture, mform_isexpanded_id_moodle, mform_isexpanded_id_moodle_additional_names, mform_isexpanded_id_moodle_interests, mform_isexpanded_id_moodle_optional, mform_isexpanded_id_category_1, moodleSession, desc) {
     const response = await fetch('https://www.dist-mspk.ru/user/edit.php', {
         method: 'POST',
         headers: {
